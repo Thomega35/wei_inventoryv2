@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class ChangeNamePopUp {
+class ChangeNamePopup {
   String newName = "";
   show(BuildContext context,String question, String name, Function onConfirm) {
     showDialog(

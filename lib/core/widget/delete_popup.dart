@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class ConfirmationSuprPopUp {
+class DeletePopup {
   show(BuildContext context, String name, Function onConfirm) {
     showDialog(
         context: context,

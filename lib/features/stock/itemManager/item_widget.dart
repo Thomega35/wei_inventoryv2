@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
-import 'InventoryMember.dart';
+import 'package:wei_inventoryv2/features/stock/itemManager/item.dart';
 
-class InventoryMemberWidget extends StatelessWidget {
+class ItemWidget extends StatelessWidget {
   final MaterialColor myColor;
-  final Product ivm;
+  final Item ivm;
   final VoidCallback add;
   final VoidCallback remove;
   final VoidCallback edit;
-  const InventoryMemberWidget(
-      {Key? key,
-      required this.ivm,
-      required this.myColor,
-      required this.add,
-      required this.remove,
-      required this.edit})
-      : super(key: key);
+
+  const ItemWidget({
+    Key? key,
+    required this.ivm,
+    required this.myColor,
+    required this.add,
+    required this.remove,
+    required this.edit
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(

@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:wei_inventoryv2/ChangeNamePopUp.dart';
-import 'package:wei_inventoryv2/ConfirmationSuprPopUp.dart';
-import 'InventoryMember.dart';
-import 'InventoryMember_widget.dart';
-import 'main.dart';
+import 'package:wei_inventoryv2/core/widget/change_name_popup.dart';
+import 'package:wei_inventoryv2/core/widget/delete_popup.dart';
+import 'package:wei_inventoryv2/features/stock/itemManager/item_widget.dart';
+import 'package:wei_inventoryv2/features/stock/itemManager/item.dart';
+import 'package:wei_inventoryv2/core/tools.dart';
 
-
-class InventoryPage extends StatefulWidget {
+class InventoryScreen extends StatefulWidget {
   final MaterialColor mainColor;
   final MaterialColor secondColor;
   final String title;
   final VoidCallback removeInventory;
-  final List<Product> products = [];
+  final List<Item> products = [];
   final List<MaterialColor> productsColors = [];
-  InventoryPage({Key? keyI, required this.mainColor, required this.secondColor, required this.title, required this.removeInventory}) : super(key: keyI);
+  InventoryScreen({Key? keyI, required this.mainColor, required this.secondColor, required this.title, required this.removeInventory}) : super(key: keyI);
   @override
-  State<InventoryPage> createState() => _InventoryPageState();
+  State<InventoryScreen> createState() => _InventoryScreenState();
 }
 
-class _InventoryPageState extends State<InventoryPage> {
+class _InventoryScreenState extends State<InventoryScreen> {
 
   late String name;
 
@@ -29,8 +28,8 @@ class _InventoryPageState extends State<InventoryPage> {
   }
   addItem(String newName){
     setState(() {
-      widget.products.add(Product(newName, 1));
-      widget.productsColors.add(MyHomePage.randomMaterialColor());
+      widget.products.add(Item(name : newName, quantity : 1));
+      widget.productsColors.add(Tools.randomMaterialColor());
     });
   }
   add(int index) {
@@ -56,15 +55,15 @@ class _InventoryPageState extends State<InventoryPage> {
     });
   }
   editInventoryMemberName(int index) {
-    ChangeNamePopUp().show(context, "Entrez le nom du produit", widget.products[index].name, (newName) {
+    ChangeNamePopup().show(context, "Entrez le nom du produit", widget.products[index].name, (newName) {
       renameProduct(newName, index);
     });
   }
   addInventoryMember() {
-    ChangeNamePopUp().show(context, "Entrez le nom du produit", "", addItem);
+    ChangeNamePopup().show(context, "Entrez le nom du produit", "", addItem);
   }
   confirmationDeletion(int index){
-    ConfirmationSuprPopUp().show(context, "Voulez-vous vraiment retirer ce produit de l'inventaire?", () {
+    DeletePopup().show(context, "Voulez-vous vraiment retirer ce produit de l'inventaire?", () {
       setState(() {
         widget.products.removeAt(index);
         widget.productsColors.removeAt(index);
@@ -72,7 +71,7 @@ class _InventoryPageState extends State<InventoryPage> {
     });
   }
   renameAndRequestInventory() {
-    ChangeNamePopUp()
+    ChangeNamePopup()
         .show(context, "Entrez le nom de l'inventaire", "", renameInventory);
   }
 
@@ -133,7 +132,7 @@ class _InventoryPageState extends State<InventoryPage> {
               child: Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(10, 0, 10, 0),
                 child: GridView.builder(
-                  itemBuilder: (context, index) => InventoryMemberWidget(
+                  itemBuilder: (context, index) => ItemWidget(
                     ivm: widget.products[index],
                     myColor: widget.productsColors[index],
                     add: () => add(index),
