@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wei_inventoryv2/core/tools.dart';
 import 'package:wei_inventoryv2/features/stock/itemManager/item.dart';
 
 @immutable
@@ -17,10 +18,10 @@ class Inventory{
     this.productsColors,
   });
 
-  Inventory.initial():
-      title = '',
-      mainColor = Colors.red,
-      secondColor = Colors.blue,
+  Inventory.initial(String name):
+      title = name,
+      mainColor = Tools.randomMaterialColor(),
+      secondColor = Tools.randomMaterialColor(),
       products = [],
       productsColors = [];
 

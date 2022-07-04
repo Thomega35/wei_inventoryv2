@@ -12,7 +12,13 @@ class InventoryScreen extends StatefulWidget {
   final VoidCallback removeInventory;
   final List<Item> products = [];
   final List<MaterialColor> productsColors = [];
-  InventoryScreen({Key? keyI, required this.mainColor, required this.secondColor, required this.title, required this.removeInventory}) : super(key: keyI);
+  InventoryScreen({
+    Key? keyI,
+    required this.mainColor,
+    required this.secondColor,
+    required this.title,
+    required this.removeInventory
+  }) : super(key: keyI);
   @override
   State<InventoryScreen> createState() => _InventoryScreenState();
 }

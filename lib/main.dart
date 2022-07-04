@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wei_inventoryv2/theme/custom_theme.dart';
 import 'package:wei_inventoryv2/features/stock/inventoryManager/stock_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -14,11 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Thomas\' Inventory',
       theme: CustomTheme.lightTheme(context),
-      initialRoute: '/',
-      routes: {
-        // When navigating to the "/" route, build the FirstScreen widget.
-        '/': (context) => const StockScreen(),
-      },
+      home : const StockScreen(),
     );
   }
 }
