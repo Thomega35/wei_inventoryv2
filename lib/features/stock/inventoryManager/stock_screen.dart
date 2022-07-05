@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wei_inventoryv2/features/stock/stock_controller.dart';
 import 'package:wei_inventoryv2/features/stock/inventoryManager/inventory_widget.dart';
+import 'package:wei_inventoryv2/core/widget/change_name_popup.dart';
 class StockScreen extends ConsumerWidget {
   const StockScreen({Key? key}) : super(key: key);
 
@@ -41,7 +42,7 @@ class StockScreen extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          ref.watch(stockControllerProvider.notifier).addAndRequestInventory(context);
+          ChangeNamePopup().show(context, "Entrez le nom de l'inventaire", "", ref.watch(stockControllerProvider.notifier).addInventory);
         },
         tooltip: 'Increment',
         child: const Icon(Icons.add),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wei_inventoryv2/features/stock/stock_controller.dart';
+import 'package:wei_inventoryv2/core/widget/change_name_popup.dart';
 class ItemWidget extends ConsumerWidget {
 
   const ItemWidget({
@@ -75,7 +76,12 @@ class ItemWidget extends ConsumerWidget {
                     color: Colors.white,
                     child: InkWell(
                       splashColor: ref.watch(stockControllerProvider).inventories[inventoryIndex].productsColors[itemIndex],
-                      onTap: () {ref.read(stockControllerProvider.notifier).editItemName(context, inventoryIndex, itemIndex);},
+                      onTap: () {
+                        ChangeNamePopup().show(context, "Entrez le nom du produit",
+                            ref.watch(stockControllerProvider).inventories[inventoryIndex].products[itemIndex].name, (newName) {
+                              ref.read(stockControllerProvider.notifier).editName(inventoryIndex, itemIndex, newName);
+                            });
+                        },
                       child: const SizedBox(
                         width: 40,
                         height: 40,

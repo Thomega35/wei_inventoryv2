@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wei_inventoryv2/features/stock/itemManager/item_widget.dart';
 import 'package:wei_inventoryv2/features/stock/stock_controller.dart';
+import 'package:wei_inventoryv2/core/widget/change_name_popup.dart';
+import 'package:wei_inventoryv2/core/widget/delete_popup.dart';
 
 class InventoryScreen extends ConsumerWidget {
   const InventoryScreen({
@@ -34,7 +36,12 @@ class InventoryScreen extends ConsumerWidget {
                     color: ref.watch(stockControllerProvider).inventories[index].mainColor,
                     child: InkWell(
                       splashColor: ref.watch(stockControllerProvider).inventories[index].secondColor,
-                      onTap: () {ref.read(stockControllerProvider.notifier).renameAndRequestInventory(context,index);},
+                      onTap: () {
+                        ChangeNamePopup()
+                            .show(context, "Entrez le nom de l'inventaire", ref.watch(stockControllerProvider).inventories[index].title, (newName) {
+                          ref.read(stockControllerProvider.notifier).renameInventory(index, newName);
+                        });
+                        },
                       child: const SizedBox(
                         width: 40,
                         height: 40,
@@ -52,7 +59,13 @@ class InventoryScreen extends ConsumerWidget {
                     color: ref.watch(stockControllerProvider).inventories[index].secondColor,
                     child: InkWell(
                       splashColor: ref.watch(stockControllerProvider).inventories[index].mainColor,
-                      onTap: () {ref.read(stockControllerProvider.notifier).removeInventory(context, index);},
+                      onTap: () {
+                        DeletePopup()
+                            .show(context, "Êtes-vous sûr de vouloir supprimer l'inventaire ?", () {
+                          ref.read(stockControllerProvider.notifier).removeInventory(index);
+                          Navigator.of(context).pop(context);
+                        });
+                        },
                       child: const SizedBox(
                         width: 40,
                         height: 40,
@@ -85,7 +98,11 @@ class InventoryScreen extends ConsumerWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {ref.watch(stockControllerProvider.notifier).addInventoryMember(context, index);},
+        onPressed: () {
+          ChangeNamePopup().show(context, "Entrez le nom du produit", "", (newName){
+            ref.watch(stockControllerProvider.notifier).addItem(index, newName);
+          });
+        },
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
