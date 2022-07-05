@@ -43,10 +43,7 @@ class InventoryWidget extends ConsumerWidget {
           ),
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) => InventoryScreen(
-              title: ref.watch(stockControllerProvider).inventories[index].title,
-              mainColor: ref.watch(stockControllerProvider).inventories[index].mainColor,
-              secondColor: ref.watch(stockControllerProvider).inventories[index].secondColor,
-              removeInventory: () => ref.read(stockControllerProvider.notifier).removeInventory(index,context),
+              index: index,
             )));
           },
           child: Padding(

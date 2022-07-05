@@ -7,15 +7,15 @@ class Inventory{
   final String title;
   final MaterialColor mainColor;
   final MaterialColor secondColor;
-  final List<Item>? products;
-  final List<MaterialColor>? productsColors;
+  final List<Item> products;
+  final List<MaterialColor> productsColors;
 
   const Inventory({
     required this.title,
     required this.mainColor,
     required this.secondColor,
-    this.products,
-    this.productsColors,
+    this.products = const [],
+    this.productsColors = const [],
   });
 
   Inventory.initial(String name):
@@ -24,6 +24,22 @@ class Inventory{
       secondColor = Tools.randomMaterialColor(),
       products = [],
       productsColors = [];
+
+  Inventory copyWith({
+    String? title,
+    MaterialColor? mainColor,
+    MaterialColor? secondColor,
+    List<Item>? products,
+    List<MaterialColor>? productsColors,
+  }){
+    return Inventory(
+      title: title ?? this.title,
+      mainColor: mainColor ?? this.mainColor,
+      secondColor: secondColor ?? this.secondColor,
+      products: products ?? this.products,
+      productsColors: productsColors ?? this.productsColors,
+    );
+  }
 
   @override
   String toString() => 'Inventory{title: $title, mainColor: $mainColor, secondColor: $secondColor, products: $products, productsColors: $productsColors}';

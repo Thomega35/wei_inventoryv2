@@ -1,28 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:wei_inventoryv2/features/stock/itemManager/item.dart';
-
-class ItemWidget extends StatelessWidget {
-  final MaterialColor myColor;
-  final Item ivm;
-  final VoidCallback add;
-  final VoidCallback remove;
-  final VoidCallback edit;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:wei_inventoryv2/features/stock/stock_controller.dart';
+class ItemWidget extends ConsumerWidget {
 
   const ItemWidget({
     Key? key,
-    required this.ivm,
-    required this.myColor,
-    required this.add,
-    required this.remove,
-    required this.edit
+    required this.itemIndex,
+    required this.inventoryIndex,
   }) : super(key: key);
 
+  final int itemIndex;
+  final int inventoryIndex;
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return DecoratedBox(
         decoration: BoxDecoration(
           border: Border(
-            top: BorderSide(width: 5.0, color: myColor),
+            top: BorderSide(width: 5.0, color: ref.watch(stockControllerProvider).inventories[inventoryIndex].productsColors[itemIndex]),
           ),
           color: Colors.white,
           boxShadow: [
@@ -37,11 +31,11 @@ class ItemWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text(ivm.name,
+            Text(ref.watch(stockControllerProvider).inventories[inventoryIndex].products[itemIndex].name,
                 style: Theme.of(context).textTheme.subtitle1,
                 textAlign: TextAlign.center),
             Text(
-              "Quantité : ${ivm.quantity}",
+              "Quantité : ${ref.watch(stockControllerProvider).inventories[inventoryIndex].products[itemIndex].quantity}",
               style: Theme.of(context).textTheme.headline2,
             ),
             Row(
@@ -52,8 +46,8 @@ class ItemWidget extends StatelessWidget {
                   child: Material(
                     color: Colors.white,
                     child: InkWell(
-                      splashColor: myColor,
-                      onTap: remove,
+                      splashColor: ref.watch(stockControllerProvider).inventories[inventoryIndex].productsColors[itemIndex],
+                      onTap: () {ref.read(stockControllerProvider.notifier).remove(context, inventoryIndex, itemIndex);},
                       child: const SizedBox(
                         width: 40,
                         height: 40,
@@ -66,8 +60,8 @@ class ItemWidget extends StatelessWidget {
                   child: Material(
                     color: Colors.white,
                     child: InkWell(
-                      splashColor: myColor,
-                      onTap: add,
+                      splashColor: ref.watch(stockControllerProvider).inventories[inventoryIndex].productsColors[itemIndex],
+                      onTap: () => ref.read(stockControllerProvider.notifier).add(inventoryIndex, itemIndex),
                       child: const SizedBox(
                         width: 40,
                         height: 40,
@@ -80,8 +74,8 @@ class ItemWidget extends StatelessWidget {
                   child: Material(
                     color: Colors.white,
                     child: InkWell(
-                      splashColor: myColor,
-                      onTap: edit,
+                      splashColor: ref.watch(stockControllerProvider).inventories[inventoryIndex].productsColors[itemIndex],
+                      onTap: () {ref.read(stockControllerProvider.notifier).editItemName(context, inventoryIndex, itemIndex);},
                       child: const SizedBox(
                         width: 40,
                         height: 40,

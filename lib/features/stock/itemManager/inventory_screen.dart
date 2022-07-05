@@ -1,89 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:wei_inventoryv2/core/widget/change_name_popup.dart';
-import 'package:wei_inventoryv2/core/widget/delete_popup.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wei_inventoryv2/features/stock/itemManager/item_widget.dart';
-import 'package:wei_inventoryv2/features/stock/itemManager/item.dart';
-import 'package:wei_inventoryv2/core/tools.dart';
+import 'package:wei_inventoryv2/features/stock/stock_controller.dart';
 
-class InventoryScreen extends StatefulWidget {
-  final MaterialColor mainColor;
-  final MaterialColor secondColor;
-  final String title;
-  final VoidCallback removeInventory;
-  final List<Item> products = [];
-  final List<MaterialColor> productsColors = [];
-  InventoryScreen({
-    Key? keyI,
-    required this.mainColor,
-    required this.secondColor,
-    required this.title,
-    required this.removeInventory
-  }) : super(key: keyI);
-  @override
-  State<InventoryScreen> createState() => _InventoryScreenState();
-}
+class InventoryScreen extends ConsumerWidget {
+  const InventoryScreen({
+    Key? key,
+    required this.index,
+  }) : super(key: key);
 
-class _InventoryScreenState extends State<InventoryScreen> {
-
-  late String name;
+  final int index;
 
   @override
-  initState() {
-    super.initState();
-    name = widget.title;
-  }
-  addItem(String newName){
-    setState(() {
-      widget.products.add(Item(name : newName, quantity : 1));
-      widget.productsColors.add(Tools.randomMaterialColor());
-    });
-  }
-  add(int index) {
-    setState(() {
-      widget.products[index] = widget.products[index].add();
-    });
-  }
-  remove(int index) {
-    setState(() {if (widget.products[index].quantity - 1 <= 0) {
-      confirmationDeletion(index);
-    } else {
-      widget.products[index] = widget.products[index].remove();
-    }});
-  }
-  renameProduct(String newName, int index) {
-    setState(() {
-      widget.products[index] = widget.products[index].rename(newName);
-    });
-  }
-  renameInventory(String newName) {
-    setState(() {
-      name = newName;
-    });
-  }
-  editInventoryMemberName(int index) {
-    ChangeNamePopup().show(context, "Entrez le nom du produit", widget.products[index].name, (newName) {
-      renameProduct(newName, index);
-    });
-  }
-  addInventoryMember() {
-    ChangeNamePopup().show(context, "Entrez le nom du produit", "", addItem);
-  }
-  confirmationDeletion(int index){
-    DeletePopup().show(context, "Voulez-vous vraiment retirer ce produit de l'inventaire?", () {
-      setState(() {
-        widget.products.removeAt(index);
-        widget.productsColors.removeAt(index);
-      });
-    });
-  }
-  renameAndRequestInventory() {
-    ChangeNamePopup()
-        .show(context, "Entrez le nom de l'inventaire", "", renameInventory);
-  }
-
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(),
       body: Center(
@@ -93,7 +22,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
             SizedBox(
               height: 60,
               child : Text(
-                name,
+                ref.watch(stockControllerProvider).inventories[index].title,
                 style: Theme.of(context).textTheme.headline1,
               ),
             ), //Title of the inventory
@@ -102,10 +31,10 @@ class _InventoryScreenState extends State<InventoryScreen> {
               children: <Widget>[
                 ClipOval(
                   child: Material(
-                    color: widget.mainColor,
+                    color: ref.watch(stockControllerProvider).inventories[index].mainColor,
                     child: InkWell(
-                      splashColor: widget.secondColor,
-                      onTap: renameAndRequestInventory,
+                      splashColor: ref.watch(stockControllerProvider).inventories[index].secondColor,
+                      onTap: () {ref.read(stockControllerProvider.notifier).renameAndRequestInventory(context,index);},
                       child: const SizedBox(
                         width: 40,
                         height: 40,
@@ -120,10 +49,10 @@ class _InventoryScreenState extends State<InventoryScreen> {
                 ),
                 ClipOval(
                   child: Material(
-                    color: widget.secondColor,
+                    color: ref.watch(stockControllerProvider).inventories[index].secondColor,
                     child: InkWell(
-                      splashColor: widget.mainColor,
-                      onTap: widget.removeInventory,
+                      splashColor: ref.watch(stockControllerProvider).inventories[index].mainColor,
+                      onTap: () {ref.read(stockControllerProvider.notifier).removeInventory(context, index);},
                       child: const SizedBox(
                         width: 40,
                         height: 40,
@@ -138,14 +67,11 @@ class _InventoryScreenState extends State<InventoryScreen> {
               child: Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(10, 0, 10, 0),
                 child: GridView.builder(
-                  itemBuilder: (context, index) => ItemWidget(
-                    ivm: widget.products[index],
-                    myColor: widget.productsColors[index],
-                    add: () => add(index),
-                    remove: () => remove(index),
-                    edit: () => editInventoryMemberName(index),
+                  itemBuilder: (context, itemIndex) => ItemWidget(
+                    inventoryIndex : index,
+                    itemIndex : itemIndex,
                   ),
-                  itemCount: widget.products.length,
+                  itemCount: ref.watch(stockControllerProvider).inventories[index].products.length,
                   gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 200,
                     crossAxisSpacing: 20,
@@ -159,7 +85,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: addInventoryMember,
+        onPressed: () {ref.watch(stockControllerProvider.notifier).addInventoryMember(context, index);},
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
